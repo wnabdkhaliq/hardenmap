@@ -1,6 +1,6 @@
 - id: PERM-001
   title: /etc/passwd permissions
-  cis_ref: "TODO"
+  cis_ref: "7.1.1"
   type: file_perm
   target: /etc/passwd
   max_mode: "0644"
@@ -10,7 +10,7 @@
 
 - id: PERM-002
   title: /etc/group permissions
-  cis_ref: "TODO"
+  cis_ref: "7.1.3"
   type: file_perm
   target: /etc/group
   max_mode: "0644"
@@ -20,7 +20,7 @@
 
 - id: PERM-003
   title: /etc/shadow permissions
-  cis_ref: "TODO"
+  cis_ref: "7.1.5"
   type: file_perm
   target: /etc/shadow
   max_mode: "0640"
@@ -28,9 +28,111 @@
   severity: high
   fix: Run chmod 640 /etc/shadow and chown root:shadow /etc/shadow
 
+- id: PERM-004
+  title: /etc/passwd- permissions
+  cis_ref: "7.1.2"
+  type: file_perm
+  target: /etc/passwd-
+  max_mode: "0644"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 644 /etc/passwd- and chown root:root /etc/passwd-
+
+- id: PERM-005
+  title: /etc/group- permissions
+  cis_ref: "7.1.4"
+  type: file_perm
+  target: /etc/group-
+  max_mode: "0644"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 644 /etc/group- and chown root:root /etc/group-
+
+- id: PERM-006
+  title: /etc/shadow- permissions
+  cis_ref: "7.1.6"
+  type: file_perm
+  target: /etc/shadow-
+  max_mode: "0640"
+  owner_uid: 0
+  severity: high
+  fix: Run chmod 640 /etc/shadow- and chown root:shadow /etc/shadow-
+
+- id: PERM-007
+  title: World-writable files in sensitive folders
+  cis_ref: "7.1.11"
+  type: find_files
+  condition: world_writable
+  search_dirs:
+    - /etc
+    - /opt
+    - /usr/local
+  severity: medium
+  fix: Remove write permission for others on each file (chmod o-w <file>)
+
+- id: PERM-008
+  title: /etc/gshadow permissions
+  cis_ref: "7.1.7"
+  type: file_perm
+  target: /etc/gshadow
+  max_mode: "0640"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 640 /etc/gshadow and chown root:shadow /etc/gshadow
+
+- id: PERM-009
+  title: /etc/gshadow- permissions
+  cis_ref: "7.1.8"
+  type: file_perm
+  target: /etc/gshadow-
+  max_mode: "0640"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 640 /etc/gshadow- and chown root:shadow /etc/gshadow-
+
+- id: PERM-010
+  title: /etc/shells permissions
+  cis_ref: "7.1.9"
+  type: file_perm
+  target: /etc/shells
+  max_mode: "0644"
+  owner_uid: 0
+  severity: low
+  fix: Run chmod 644 /etc/shells and chown root:root /etc/shells
+
+- id: PERM-011
+  title: /etc/crontab permissions
+  cis_ref: "2.4.1.2"
+  type: file_perm
+  target: /etc/crontab
+  max_mode: "0600"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 600 /etc/crontab and chown root:root /etc/crontab
+
+- id: PERM-012
+  title: /etc/cron.d permissions
+  cis_ref: "2.4.1.8"
+  type: file_perm
+  target: /etc/cron.d
+  max_mode: "0700"
+  owner_uid: 0
+  severity: low
+  fix: Run chmod 700 /etc/cron.d and chown root:root /etc/cron.d
+
+- id: PERM-013
+  title: /etc/cron.daily permissions
+  cis_ref: "2.4.1.4"
+  type: file_perm
+  target: /etc/cron.daily
+  max_mode: "0700"
+  owner_uid: 0
+  severity: low
+  fix: Run chmod 700 /etc/cron.daily and chown root:root /etc/cron.daily
+
 - id: SSH-001
   title: SSH root login enabled
-  cis_ref: "TODO"
+  cis_ref: "5.1.20"
   type: file_contains
   targets:
     - /etc/ssh/sshd_config
@@ -42,7 +144,7 @@
 
 - id: SSH-002
   title: SSH empty passwords allowed
-  cis_ref: "TODO"
+  cis_ref: "5.1.19"
   type: file_contains
   targets:
     - /etc/ssh/sshd_config
@@ -51,6 +153,40 @@
   fail_if: found
   severity: high
   fix: Set PermitEmptyPasswords no in sshd_config, then restart sshd
+
+- id: SSH-003
+  title: sshd_config permissions
+  cis_ref: "5.1.1"
+  type: file_perm
+  target: /etc/ssh/sshd_config
+  max_mode: "0600"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 600 /etc/ssh/sshd_config and chown root:root /etc/ssh/sshd_config
+
+- id: SSH-004
+  title: SSH IgnoreRhosts disabled
+  cis_ref: "5.1.11"
+  type: file_contains
+  targets:
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/*.conf
+  pattern: '^IgnoreRhosts\s+no'
+  fail_if: found
+  severity: medium
+  fix: Set IgnoreRhosts yes in sshd_config, then restart sshd
+
+- id: SSH-005
+  title: SSH HostbasedAuthentication enabled
+  cis_ref: "5.1.10"
+  type: file_contains
+  targets:
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/*.conf
+  pattern: '^HostbasedAuthentication\s+yes'
+  fail_if: found
+  severity: medium
+  fix: Set HostbasedAuthentication no in sshd_config, then restart sshd
 
 - id: CRON-001
   title: Scripts run by root from cron
@@ -67,21 +203,9 @@
   severity: low
   fix: Make sure every script root runs from cron is owned by root and not writable by others
 
-- id: PERM-007
-  title: World-writable files in sensitive folders
-  cis_ref: "TODO"
-  type: find_files
-  condition: world_writable
-  search_dirs:
-    - /etc
-    - /opt
-    - /usr/local
-  severity: medium
-  fix: Remove write permission for others on each file (chmod o-w <file>)
-
 - id: SUID-001
   title: SUID files in program folders
-  cis_ref: "TODO"
+  cis_ref: "7.1.13"
   type: find_files
   condition: suid
   status_if_found: info

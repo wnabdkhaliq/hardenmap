@@ -3,7 +3,7 @@
   requires: [PERM-007, CRON-001]
   same_path: true
   severity: critical
-  mitre: "TODO"
+  mitre: "T1053.003 Scheduled Task/Job: Cron"
   explanation: A normal user can edit a script that root runs automatically from cron, so they could get root access.
 
 - id: PATH-002
@@ -11,7 +11,7 @@
   requires: [SSH-001, SSH-002]
   same_path: false
   severity: critical
-  mitre: "TODO"
+  mitre: "T1021.004 Remote Services: SSH, T1078 Valid Accounts"
   explanation: SSH allows root to log in and also allows empty passwords, so someone could log in as root without a password.
 
 - id: PATH-003
@@ -19,5 +19,13 @@
   requires: [PERM-007, SUID-001]
   same_path: true
   severity: high
-  mitre: "TODO"
+  mitre: "T1548.001 Abuse Elevation Control Mechanism: Setuid and Setgid"
   explanation: Anyone can edit a program that runs with its owner's rights (often root), so they could replace it with their own code.
+
+- id: PATH-004
+  name: Readable password hashes with root SSH login
+  requires: [PERM-003, SSH-001]
+  same_path: false
+  severity: high
+  mitre: "T1003.008 OS Credential Dumping: /etc/passwd and /etc/shadow, T1021.004 Remote Services: SSH"
+  explanation: /etc/shadow is more open than CIS allows (it may be readable by other users) and root is allowed to log in over SSH, so a cracked root password could give full remote access.
