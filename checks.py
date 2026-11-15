@@ -117,3 +117,40 @@ def check_cron_scripts(rule):
 
     evidence = f"{len(scripts)} script(s) run by root from cron"
     return {"status": "info", "evidence": evidence, "paths": sorted(scripts)}
+
+
+def check_find_files(rule):
+    """Walk through folders and find files with risky permissions.
+    condition can be: world_writable (anyone can edit) or suid (runs as the file owner)."""
+    condition = rule["condition"]
+    status_if_found = rule.get("status_if_found", "fail")
+
+    found = []
+
+    for folder in rule["search_dirs"]:
+        for root, subfolders, files in os.walk(folder):
+            for name in files:
+                full_path = os.path.join(root, name)
+
+                if os.path.islink(full_path):
+                    continue
+
+                try:
+                    info = os.lstat(full_path)
+                except OSError:
+                    continue
+
+                if not stat.S_ISREG(info.st_mode):
+                    continue
+
+                if condition == "world_writable" and info.st_mode & stat.S_IWOTH:
+                    found.append(full_path)
+                elif condition == "suid" and info.st_mode & stat.S_ISUID:
+                    found.append(full_path)
+
+    if not found:
+        return {"status": "pass", "evidence": "no matching files found", "paths": []}
+
+    examples = ", ".join(found[:3])
+    evidence = f"{len(found)} file(s) found, for example: {examples}"
+    return {"status": status_if_found, "evidence": evidence, "paths": sorted(found)}

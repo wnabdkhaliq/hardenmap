@@ -66,3 +66,28 @@
     - /etc/cron.monthly
   severity: low
   fix: Make sure every script root runs from cron is owned by root and not writable by others
+
+- id: PERM-007
+  title: World-writable files in sensitive folders
+  cis_ref: "TODO"
+  type: find_files
+  condition: world_writable
+  search_dirs:
+    - /etc
+    - /opt
+    - /usr/local
+  severity: medium
+  fix: Remove write permission for others on each file (chmod o-w <file>)
+
+- id: SUID-001
+  title: SUID files in program folders
+  cis_ref: "TODO"
+  type: find_files
+  condition: suid
+  status_if_found: info
+  search_dirs:
+    - /usr/bin
+    - /usr/sbin
+    - /usr/local
+  severity: low
+  fix: Review each SUID file and remove the SUID bit if it is not needed (chmod u-s <file>)

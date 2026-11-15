@@ -2,12 +2,13 @@ import glob
 import os
 import yaml
 
-from checks import check_file_perm, check_file_contains, check_cron_scripts
+from checks import check_file_perm, check_file_contains, check_cron_scripts, check_find_files
 
 CHECK_FUNCTIONS = {
     "file_perm": check_file_perm,
     "file_contains": check_file_contains,
     "cron_scripts": check_cron_scripts,
+    "find_files": check_find_files,
 }
 
 

@@ -2,6 +2,7 @@ import argparse
 import sys
 
 from engine import load_rules, run_rules
+from linker import load_path_rules, link_paths
 
 VERSION = "1.0.0"
 
@@ -29,7 +30,6 @@ def show_disclaimer_and_confirm():
 
 
 def run_scan(args):
-    """This runs when the user types: python3 hardenmap.py scan"""
     rules = load_rules(args.rules)
     print(f"Loaded {len(rules)} rules from {args.rules}")
 
@@ -47,8 +47,19 @@ def run_scan(args):
         if f["status"] == "fail":
             print(f"       Fix     : {f['fix']}")
 
+    path_rules = load_path_rules(args.rules)
+    attack_paths = link_paths(findings, path_rules)
+
+    print(f"\nATTACK PATHS FOUND: {len(attack_paths)}")
+    for p in attack_paths:
+        print(f"[{p['severity'].upper()}] {p['id']}  {p['name']}")
+        print(f"       Linked : {' + '.join(p['requires'])}")
+        if p["files"]:
+            print(f"       Files  : {', '.join(p['files'])}")
+        print(f"       Why    : {p['explanation']}")
+
     total_fail = sum(1 for f in findings if f["status"] == "fail")
-    print(f"\nTotal: {len(findings)} | Failed: {total_fail}")
+    print(f"\nTotal: {len(findings)} | Failed: {total_fail} | Attack paths: {len(attack_paths)}")
 
 
 def list_rules(args):

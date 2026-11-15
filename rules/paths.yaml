@@ -1,0 +1,23 @@
+- id: PATH-001
+  name: Writable script executed by root
+  requires: [PERM-007, CRON-001]
+  same_path: true
+  severity: critical
+  mitre: "TODO"
+  explanation: A normal user can edit a script that root runs automatically from cron, so they could get root access.
+
+- id: PATH-002
+  name: Root SSH login with empty passwords
+  requires: [SSH-001, SSH-002]
+  same_path: false
+  severity: critical
+  mitre: "TODO"
+  explanation: SSH allows root to log in and also allows empty passwords, so someone could log in as root without a password.
+
+- id: PATH-003
+  name: Writable SUID file
+  requires: [PERM-007, SUID-001]
+  same_path: true
+  severity: high
+  mitre: "TODO"
+  explanation: Anyone can edit a program that runs with its owner's rights (often root), so they could replace it with their own code.
