@@ -117,6 +117,8 @@ def build_html(data):
         if p["files"]:
             out.append("Files: " + esc(", ".join(p["files"])) + "<br>")
         out.append("Why: " + esc(p["explanation"]))
+        if p["mitre"]:
+            out.append("<br>MITRE ATT&CK: " + esc(p["mitre"]))
         out.append("</div>")
 
     out.append("<h2>Findings</h2>")

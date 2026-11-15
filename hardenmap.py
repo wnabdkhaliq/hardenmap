@@ -71,6 +71,8 @@ def run_scan(args):
         if p["files"]:
             print(f"       Files  : {', '.join(p['files'])}")
         print(f"       Why    : {p['explanation']}")
+        if p["mitre"]:
+            print(f"       MITRE  : {p['mitre']}")
 
     total_fail = sum(1 for f in findings if f["status"] == "fail")
     print(f"\nTotal: {len(findings)} | Failed: {total_fail} | Attack paths: {len(attack_paths)}")
