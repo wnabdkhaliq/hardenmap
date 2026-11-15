@@ -27,3 +27,27 @@
   owner_uid: 0
   severity: high
   fix: Run chmod 640 /etc/shadow and chown root:shadow /etc/shadow
+
+- id: SSH-001
+  title: SSH root login enabled
+  cis_ref: "TODO"
+  type: file_contains
+  targets:
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/*.conf
+  pattern: '^PermitRootLogin\s+yes'
+  fail_if: found
+  severity: high
+  fix: Set PermitRootLogin no in sshd_config, then restart sshd
+
+- id: SSH-002
+  title: SSH empty passwords allowed
+  cis_ref: "TODO"
+  type: file_contains
+  targets:
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/*.conf
+  pattern: '^PermitEmptyPasswords\s+yes'
+  fail_if: found
+  severity: high
+  fix: Set PermitEmptyPasswords no in sshd_config, then restart sshd
