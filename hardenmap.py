@@ -3,6 +3,7 @@ import sys
 
 from engine import load_rules, run_rules
 from linker import load_path_rules, link_paths
+from report import save_reports
 
 VERSION = "1.0.0"
 
@@ -61,6 +62,12 @@ def run_scan(args):
     total_fail = sum(1 for f in findings if f["status"] == "fail")
     print(f"\nTotal: {len(findings)} | Failed: {total_fail} | Attack paths: {len(attack_paths)}")
 
+    data, saved = save_reports(findings, attack_paths, args.output, args.format, VERSION)
+    print(f"Risk score: {data['summary']['risk_score']}  ->  {data['summary']['risk_level']}")
+    print("Reports saved:")
+    for path in saved:
+        print(f"  {path}")
+
 
 def list_rules(args):
     """This runs when the user types: python3 hardenmap.py list-rules"""
@@ -93,6 +100,8 @@ def build_parser():
                           help="folder to save reports (default: output/)")
     scan_cmd.add_argument("--dry-run", action="store_true",
                           help="show what would run, but do not run any checks")
+    scan_cmd.add_argument("--format", choices=["json", "html", "both"], default="both",
+                          help="report format to save (default: both)")
     scan_cmd.set_defaults(func=run_scan)
 
     list_cmd = subparsers.add_parser("list-rules", help="show all loaded rules")
