@@ -1,5 +1,6 @@
 import argparse
 import sys
+import socket
 
 from engine import load_rules, run_rules
 from linker import load_path_rules, link_paths
@@ -21,6 +22,17 @@ This tool is read-only. It does not change any system setting.
 """
 
 
+LOCAL_TARGETS = ("localhost", "127.0.0.1")
+
+
+def check_scope(target):
+    """Only the local machine is in scope. This tool never scans other hosts."""
+    allowed = LOCAL_TARGETS + (socket.gethostname(),)
+    if target not in allowed:
+        print(f"Target '{target}' is out of scope. HardenMap only audits the local machine.")
+        sys.exit(1)
+
+
 def show_disclaimer_and_confirm():
     """Show the legal notice and ask the user to confirm."""
     print(DISCLAIMER)
@@ -33,6 +45,7 @@ def show_disclaimer_and_confirm():
 def run_scan(args):
     rules = load_rules(args.rules)
     print(f"Loaded {len(rules)} rules from {args.rules}")
+    print(f"Target scope: {args.target} (local machine only)")
 
     if args.dry_run:
         print("Dry run: these rules would run, but no checks are run.")
@@ -102,6 +115,8 @@ def build_parser():
                           help="show what would run, but do not run any checks")
     scan_cmd.add_argument("--format", choices=["json", "html", "both"], default="both",
                           help="report format to save (default: both)")
+    scan_cmd.add_argument("--target", default="localhost",
+                          help="target to audit, local machine only (default: localhost)")
     scan_cmd.set_defaults(func=run_scan)
 
     list_cmd = subparsers.add_parser("list-rules", help="show all loaded rules")
@@ -118,6 +133,7 @@ def main():
 
     try:
         if args.command == "scan":
+            check_scope(args.target)
             show_disclaimer_and_confirm()
         args.func(args)
     except KeyboardInterrupt:
