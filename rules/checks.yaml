@@ -51,3 +51,18 @@
   fail_if: found
   severity: high
   fix: Set PermitEmptyPasswords no in sshd_config, then restart sshd
+
+- id: CRON-001
+  title: Scripts run by root from cron
+  cis_ref: "N/A"
+  type: cron_scripts
+  targets:
+    - /etc/crontab
+    - /etc/cron.d/*
+  script_dirs:
+    - /etc/cron.hourly
+    - /etc/cron.daily
+    - /etc/cron.weekly
+    - /etc/cron.monthly
+  severity: low
+  fix: Make sure every script root runs from cron is owned by root and not writable by others

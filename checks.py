@@ -72,3 +72,48 @@ def check_file_contains(rule):
         return {"status": "fail", "evidence": evidence, "paths": paths}
 
     return {"status": "pass", "evidence": "no problem found", "paths": []}
+
+
+def check_cron_scripts(rule):
+    """List the scripts that root runs from cron.
+    This is information only. The attack path linker uses the list later."""
+    scripts = {}   # script path -> where we found it
+
+    cron_files = []
+    for target in rule["targets"]:
+        cron_files += glob.glob(target)
+
+    for cron_file in cron_files:
+        try:
+            with open(cron_file) as f:
+                for line in f:
+                    text = line.strip()
+                    if not text or text.startswith("#"):
+                        continue
+                    parts = text.split()
+                    if len(parts) < 7:
+                        continue
+                    user = parts[5]
+                    if user != "root":
+                        continue
+                    for word in parts[6:]:
+                        if word.startswith("/") and os.path.isfile(word):
+                            scripts[word] = cron_file
+        except PermissionError:
+            continue
+
+    for folder in rule.get("script_dirs", []):
+        try:
+            names = os.listdir(folder)
+        except (FileNotFoundError, PermissionError):
+            continue
+        for name in names:
+            full_path = os.path.join(folder, name)
+            if os.path.isfile(full_path):
+                scripts[full_path] = folder
+
+    if not scripts:
+        return {"status": "pass", "evidence": "no scripts run by root from cron", "paths": []}
+
+    evidence = f"{len(scripts)} script(s) run by root from cron"
+    return {"status": "info", "evidence": evidence, "paths": sorted(scripts)}
