@@ -1,0 +1,29 @@
+- id: PERM-001
+  title: /etc/passwd permissions
+  cis_ref: "TODO"
+  type: file_perm
+  target: /etc/passwd
+  max_mode: "0644"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 644 /etc/passwd and chown root:root /etc/passwd
+
+- id: PERM-002
+  title: /etc/group permissions
+  cis_ref: "TODO"
+  type: file_perm
+  target: /etc/group
+  max_mode: "0644"
+  owner_uid: 0
+  severity: medium
+  fix: Run chmod 644 /etc/group and chown root:root /etc/group
+
+- id: PERM-003
+  title: /etc/shadow permissions
+  cis_ref: "TODO"
+  type: file_perm
+  target: /etc/shadow
+  max_mode: "0640"
+  owner_uid: 0
+  severity: high
+  fix: Run chmod 640 /etc/shadow and chown root:shadow /etc/shadow
