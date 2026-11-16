@@ -20,7 +20,7 @@ pip install -r requirements.txt
 python3 hardenmap.py scan
 ```
 
-When the legal notice appears, type `yes` to confirm that you are allowed to audit this machine. The scan takes about a second. The results are printed on the screen, and the reports are saved in the `output/` folder.
+When the legal notice appears, type `yes` to confirm that you are allowed to audit this machine. The scan takes about a second. The results are printed on the screen and the reports are saved in the `output/` folder.
 
 ## Installation
 
@@ -33,7 +33,7 @@ When the legal notice appears, type `yes` to confirm that you are allowed to aud
 | 5 | `source venv/bin/activate` | Turns it on. The prompt starts with `(venv)` |
 | 6 | `pip install -r requirements.txt` | Installs PyYAML (needs internet) |
 
-Run the project from your **home folder**, not from a VirtualBox shared folder. Shared folders break virtual environments and show wrong file owners, which gives wrong scan results.
+Run the project from your **home folder**, not from a VirtualBox shared folder. Shared folders break virtual environments and show wrong file owners which gives wrong scan results.
 
 Each time you open a new terminal, turn the environment on again before you run the tool:
 
@@ -69,7 +69,7 @@ python3 hardenmap.py scan --output my_reports/   # save reports in another folde
 | `--dry-run` | Show which rules would run, without running them |
 | `--target` | Local machine only (default: `localhost`). Other targets are refused |
 
-Run the tool as a **normal user**, without `sudo`. If you press **Ctrl+C**, the tool stops cleanly.
+Run the tool as a **normal user** without `sudo`. If you press **Ctrl+C**, the tool stops cleanly.
 
 ### Reading the results
 
@@ -91,15 +91,25 @@ Reports saved:
   output/hardenmap_report_20261116_015626.html
 ```
 
+Example of HTML version:
+
+<img width="1210" height="662" alt="HardenMap Report AttackPath (HTML)" src="https://github.com/user-attachments/assets/e043c9da-f794-49bb-9c45-4267dd8441d8" />
+
 ### Opening the reports
 
-Reports are saved with the date and time in the name, so a new scan never overwrites an old one. Open the HTML report in a browser, from the Files app or with:
+Reports are saved in the `output/` folder with the date and time in the name so a new scan never overwrites an old one. Run these commands from the project folder to open the newest report.
+
+Open the HTML report in your browser:
 
 ```bash
-xdg-open output/hardenmap_report_YYYYMMDD_HHMMSS.html
+xdg-open $(ls -t output/*.html | head -1)
 ```
 
-Replace the date and time with the name shown at the end of your scan. You can press **Tab** after typing `output/hardenmap_report_` to finish the name.
+View the JSON report in the terminal:
+
+```bash
+less $(ls -t output/*.json | head -1)
+```
 
 ## Troubleshooting
 
