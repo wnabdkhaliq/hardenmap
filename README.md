@@ -91,9 +91,15 @@ Reports saved:
   output/hardenmap_report_20261116_015626.html
 ```
 
-Example of HTML version:
+Example of **HTML** version:
 
 <img width="1210" height="662" alt="HardenMap Report AttackPath (HTML)" src="https://github.com/user-attachments/assets/e043c9da-f794-49bb-9c45-4267dd8441d8" />
+
+Example of **JSON** version:
+
+<img width="618" height="450" alt="HardenMap Report AttackPath (JSON)" src="https://github.com/user-attachments/assets/0ae492af-e5d8-4f4e-9f1e-9cce0d284a21" />
+
+<img width="846" height="202" alt="HardenMap Report AttackPath2 (JSON)" src="https://github.com/user-attachments/assets/3bddd1c8-97cd-4c4c-be39-f97e5d471386" />
 
 ### Opening the reports
 
