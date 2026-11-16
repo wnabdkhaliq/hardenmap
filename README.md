@@ -153,6 +153,7 @@ View the JSON report in the terminal:
 ```bash
 less $(ls -t output/*.json | head -1)
 ```
+Press `q` to exit from the JSON report in the terminal.
 
 ## Troubleshooting
 
