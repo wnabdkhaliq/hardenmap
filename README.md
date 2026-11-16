@@ -20,7 +20,7 @@ pip install -r requirements.txt
 python3 hardenmap.py scan
 ```
 
-When the legal notice appears, type `yes` to confirm that you are allowed to audit this machine. The scan takes about a second. The results are printed on the screen and the reports are saved in the `output/` folder.
+When the legal notice appears, type `yes` to confirm that you are allowed to audit this machine. The scan usually takes about a second. It is fast because HardenMap does not use the internet or any network connection. It only reads files on the local machine (file permissions, config files, cron jobs and SUID files) and checks the 20 rules in `rules/`. The results are printed on the screen and the reports are saved in the `output/` folder.
 
 ## Installation
 
