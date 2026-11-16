@@ -140,7 +140,7 @@ sudo chmod 755 /etc/cron.d /etc/cron.daily
 
 ### Opening the reports
 
-Reports are saved in the `output/` folder with the date and time in the name so a new scan never overwrites an old one. Run these commands from the project folder to open the newest report.
+Reports are saved in the `output/` folder with the date and time in the name so a new scan never overwrites an old one. Run these commands to open the newest report.
 
 Open the HTML report in your browser:
 
