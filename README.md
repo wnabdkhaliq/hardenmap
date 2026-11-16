@@ -118,7 +118,7 @@ Other users cannot write to these files so the risk is information exposure: any
 
 <img width="1225" height="610" alt="HardenMap Report (HTML)" src="https://github.com/user-attachments/assets/fef33661-14d8-4214-b837-54254091eb27" />
 
-**After hardening:** 0 FAIL, risk score 0 (LOW). This scan was run with `sudo`, because a hardened system hides these files from normal users.
+**After hardening:** 0 FAIL, risk score 0 (LOW). This scan was run with `sudo` because a hardened system hides these files from normal users.
 
 <img width="1210" height="609" alt="HardenMap Scan (0 fail) - HTML" src="https://github.com/user-attachments/assets/2b68ce7c-13f3-4312-a235-605f9abf5612" />
 
