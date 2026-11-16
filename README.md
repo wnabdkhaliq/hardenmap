@@ -138,16 +138,6 @@ sudo chmod 644 /etc/crontab /etc/ssh/sshd_config
 sudo chmod 755 /etc/cron.d /etc/cron.daily
 ```
 
-### Running as root
-
-After a system is hardened, a normal user can no longer read some files, such as `sshd_config`. Those rules then show `SKIP` ("permission denied"). To get a full scan, run the tool with the virtual environment's Python:
-
-```bash
-sudo venv/bin/python hardenmap.py scan
-```
-
-The tool is read-only, so running it as root does not change anything on the system.
-
 ### Opening the reports
 
 Reports are saved in the `output/` folder with the date and time in the name so a new scan never overwrites an old one. Run these commands from the project folder to open the newest report.
