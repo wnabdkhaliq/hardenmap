@@ -101,6 +101,53 @@ Example of **JSON** version:
 
 <img width="846" height="202" alt="HardenMap Report AttackPath2 (JSON)" src="https://github.com/user-attachments/assets/3bddd1c8-97cd-4c4c-be39-f97e5d471386" />
 
+## Default Ubuntu vs hardened Ubuntu
+
+On a default Ubuntu 24.04 install, the first scan shows **4 FAIL** results. This is expected and is not a bug in the tool. Ubuntu's default permissions are more open than CIS Level 1 asks for:
+
+| Rule | File | Ubuntu default | CIS Level 1 asks for |
+|---|---|---|---|
+| PERM-011 | /etc/crontab | 0644 | 0600 |
+| PERM-012 | /etc/cron.d | 0755 | 0700 |
+| PERM-013 | /etc/cron.daily | 0755 | 0700 |
+| SSH-003 | /etc/ssh/sshd_config | 0644 | 0600 |
+
+Other users cannot write to these files so the risk is information exposure: any user on the machine can read the cron schedule and the SSH settings.
+
+**Before (default Ubuntu):** 4 FAIL, risk score 10 (MEDIUM)
+
+<img width="1225" height="610" alt="HardenMap Report (HTML)" src="https://github.com/user-attachments/assets/fef33661-14d8-4214-b837-54254091eb27" />
+
+**After hardening:** 0 FAIL, risk score 0 (LOW). This scan was run with `sudo`, because a hardened system hides these files from normal users.
+
+<img width="1210" height="609" alt="HardenMap Scan (0 fail) - HTML" src="https://github.com/user-attachments/assets/2b68ce7c-13f3-4312-a235-605f9abf5612" />
+
+HardenMap never changes permissions. These commands are only an example of applying the fix suggestions:
+
+```bash
+sudo chmod 600 /etc/crontab
+sudo chmod 700 /etc/cron.d /etc/cron.daily
+sudo chmod 600 /etc/ssh/sshd_config
+sudo venv/bin/python hardenmap.py scan
+```
+
+To go back to the Ubuntu defaults:
+
+```bash
+sudo chmod 644 /etc/crontab /etc/ssh/sshd_config
+sudo chmod 755 /etc/cron.d /etc/cron.daily
+```
+
+### Running as root
+
+After a system is hardened, a normal user can no longer read some files, such as `sshd_config`. Those rules then show `SKIP` ("permission denied"). To get a full scan, run the tool with the virtual environment's Python:
+
+```bash
+sudo venv/bin/python hardenmap.py scan
+```
+
+The tool is read-only, so running it as root does not change anything on the system.
+
 ### Opening the reports
 
 Reports are saved in the `output/` folder with the date and time in the name so a new scan never overwrites an old one. Run these commands from the project folder to open the newest report.
