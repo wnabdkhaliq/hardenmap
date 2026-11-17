@@ -13,7 +13,6 @@ CHECK_FUNCTIONS = {
 
 
 def load_rules(folder):
-    """Read every checks*.yaml file in the rules folder."""
     rules = []
     for file_path in sorted(glob.glob(os.path.join(folder, "checks*.yaml"))):
         with open(file_path) as f:
@@ -22,7 +21,6 @@ def load_rules(folder):
 
 
 def run_rules(rules):
-    """Run each rule and collect the results."""
     findings = []
     for rule in rules:
         check_function = CHECK_FUNCTIONS.get(rule["type"])
