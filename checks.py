@@ -148,4 +148,3 @@ def check_find_files(rule):
     examples = ", ".join(found[:3])
     evidence = f"{len(found)} file(s) found, for example: {examples}"
     return {"status": status_if_found, "evidence": evidence, "paths": sorted(found)}
-    
