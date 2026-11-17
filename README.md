@@ -105,7 +105,7 @@ python3 hardenmap.py scan --output my_reports/   # save reports in another folde
 | `--dry-run` | Show which rules would run, without running them |
 | `--target` | Local machine only (default: `localhost`). Other targets are refused |
 
-Run the tool as a **normal user** without `sudo`. If you press **Ctrl+C**, the tool stops cleanly.
+Run the tool as a **normal user**. If you press **Ctrl+C**, the tool stops cleanly.
 
 ### Reading the results
 
@@ -200,4 +200,66 @@ Press `q` to exit from the JSON report in the terminal.
 | `venv/bin/activate: No such file` | Make the environment: `python3 -m venv venv` |
 | `Loaded 0 rules` | The `rules/` folder or its YAML files are missing |
 | `out of scope` message | Only `localhost` and this machine's own hostname are allowed |
-| Many `SKIP` results | A file is missing or not readable by a normal user |
+| Many `SKIP` results | A file is missing or not readable by a normal user. On a hardened system, run `sudo venv/bin/python hardenmap.py scan` |
+
+## Ethical considerations
+
+- **Read-only.** The tool only reads file modes, owners, config files and folder listings. It never changes, deletes or fixes anything. Fix suggestions are text only.
+- **Local only.** The tool does not use the network. `--target` only accepts `localhost`, `127.0.0.1` or the machine's own hostname and anything else is refused.
+- **Explicit confirmation.** The tool shows a legal notice and needs `yes` before it does anything.
+- **Safe defaults.** The default target is `localhost` and reports go to the local `output/` folder.
+- **Dry run.** `--dry-run` shows what would run without running any check.
+- **Kill switch.** Press Ctrl+C at any time. The tool stops cleanly and prints that no changes were made.
+- **No sensitive data.** Reports contain file paths, modes, owners, counts and short messages. File contents are never read into the report and the tool does not send data anywhere.
+
+## Rules of Engagement (RoE)
+
+**Authorized scope**
+- Only a machine you own or one you have written permission to audit.
+- Only the local machine where the tool is running. The tool refuses other targets.
+
+**Time windows**
+- On your own machine or VM: any time.
+- On any other machine: only inside the time window written in the authorization.
+
+**Permitted techniques**
+- Read-only checks: reading file modes and owners, reading config files and listing the folders named in the rules.
+- Running the tool as a normal user or with `sudo` on a hardened system. The tool stays read-only either way.
+
+**Prohibited actions**
+- Running the tool on any system without authorization.
+- Changing, deleting or fixing files or settings with this tool.
+- Editing the rules so the tool reads or collects file contents, passwords or keys.
+- Sending reports or findings to anyone who is not authorized to receive them.
+- Using the findings to attack a system.
+
+**Emergency stop**
+- Press **Ctrl+C**. The tool stops and prints "Stopped by user (Ctrl+C). No changes were made."
+- The tool is read-only so there is nothing to undo. If it was stopped while writing a report, delete the unfinished file in `output/`.
+- Tell the system owner if you stopped the scan on their machine.
+
+## Responsible disclosure
+
+**For findings on a system you audited**
+- **Who:** report to the system owner or the person who gave you permission to audit.
+- **When:** as soon as you confirm the finding. Report critical findings (for example an attack path) first. Agree on a timeline with the owner. We suggest within 24 hours for critical findings and within one week for the rest.
+- **How:** give the report privately, in person or through a private channel. Do not post it on public websites, social media or public GitHub issues. Include the rule ID, the evidence and the fix suggestion.
+
+**For problems in HardenMap itself**
+- Normal bugs: open a GitHub issue.
+- Security problems: do not open a public issue. Contact any member of the team listed at the top of this README through their GitHub profile. We will reply and fix it before it is discussed in public.
+
+## Legal disclaimer
+
+This tool is for authorized security auditing only. Use it only on systems you own or have written permission to audit. Unauthorized access to computer systems is an offence under the **Computer Crimes Act 1997 (Malaysia)**. You are responsible for how you use this tool. The authors are not responsible for any misuse or damage.
+
+## Limitations
+
+- Ubuntu 24.04 LTS only. It audits selected CIS controls, not all of them so passing all rules does not mean the system is CIS compliant.
+- File permission rules check the mode and the owner but not the group. They do not say which permission bit caused a failure.
+- SSH rules look for explicitly insecure lines in `sshd_config` and `sshd_config.d/*.conf`. They do not work out the effective setting so `Match` blocks and default values can be missed.
+- PERM-007 only searches `/etc`, `/opt` and `/usr/local` and SUID-001 only searches `/usr/bin`, `/usr/sbin` and `/usr/local`.
+- The cron check does not read user crontabs, which need root.
+- On a hardened system, a normal user cannot read some files so those rules show `SKIP`.
+- Only four attack paths are defined. More can be added in `rules/paths.yaml`.
+- It does not scan the network, find CVEs or detect existing compromise. It is not a replacement for a full scanner like Nessus.
