@@ -26,7 +26,6 @@ LOCAL_TARGETS = ("localhost", "127.0.0.1")
 
 
 def check_scope(target):
-    """Only the local machine is in scope. This tool never scans other hosts."""
     allowed = LOCAL_TARGETS + (socket.gethostname(),)
     if target not in allowed:
         print(f"Target '{target}' is out of scope. HardenMap only audits the local machine.")
@@ -34,7 +33,6 @@ def check_scope(target):
 
 
 def show_disclaimer_and_confirm():
-    """Show the legal notice and ask the user to confirm."""
     print(DISCLAIMER)
     answer = input("Do you have authorization to audit this machine? (yes/no): ")
     if answer.strip().lower() != "yes":
@@ -85,14 +83,12 @@ def run_scan(args):
 
 
 def list_rules(args):
-    """This runs when the user types: python3 hardenmap.py list-rules"""
     rules = load_rules(args.rules)
     for rule in rules:
         print(f"{rule['id']:10} {rule['severity']:8} {rule['title']}")
 
 
 def build_parser():
-    """Set up the commands and options for the tool."""
     parser = argparse.ArgumentParser(
         prog="hardenmap",
         description="HardenMap - read-only audit tool for Ubuntu 24.04 (CIS Benchmark)",
