@@ -4,7 +4,6 @@ import re
 import glob
 
 def check_file_perm(rule):
-    """Check that a file is not too open and is owned by the right user."""
     path = rule["target"]
 
     if not os.path.exists(path):
@@ -33,7 +32,6 @@ def check_file_perm(rule):
     return {"status": "pass", "evidence": f"{path} is OK", "paths": []}
 
 def check_file_contains(rule):
-    """Look for a risky line (or a missing line) in config files."""
     pattern = re.compile(rule["pattern"], re.IGNORECASE)
     fail_if = rule.get("fail_if", "found")
 
@@ -75,9 +73,7 @@ def check_file_contains(rule):
 
 
 def check_cron_scripts(rule):
-    """List the scripts that root runs from cron.
-    This is information only. The attack path linker uses the list later."""
-    scripts = {}   # script path -> where we found it
+    scripts = {}  
 
     cron_files = []
     for target in rule["targets"]:
@@ -120,8 +116,6 @@ def check_cron_scripts(rule):
 
 
 def check_find_files(rule):
-    """Walk through folders and find files with risky permissions.
-    condition can be: world_writable (anyone can edit) or suid (runs as the file owner)."""
     condition = rule["condition"]
     status_if_found = rule.get("status_if_found", "fail")
 
@@ -154,3 +148,4 @@ def check_find_files(rule):
     examples = ", ".join(found[:3])
     evidence = f"{len(found)} file(s) found, for example: {examples}"
     return {"status": status_if_found, "evidence": evidence, "paths": sorted(found)}
+    
