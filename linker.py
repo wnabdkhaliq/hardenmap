@@ -5,7 +5,6 @@ SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
 
 def load_path_rules(folder):
-    """Read paths.yaml from the rules folder."""
     file_path = os.path.join(folder, "paths.yaml")
     if not os.path.exists(file_path):
         return []
@@ -14,7 +13,6 @@ def load_path_rules(folder):
 
 
 def link_paths(findings, path_rules):
-    """Return the attack paths that match the findings."""
     triggered = {}
     for finding in findings:
         if finding["status"] == "fail" or (finding["status"] == "info" and finding["paths"]):
