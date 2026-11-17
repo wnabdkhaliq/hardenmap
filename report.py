@@ -35,7 +35,6 @@ th { background: #333; color: #fff; }
 
 
 def calculate_score(findings, attack_paths):
-    """Add up the points and give a risk level."""
     score = 0
     for f in findings:
         if f["status"] == "fail":
@@ -55,7 +54,6 @@ def calculate_score(findings, attack_paths):
 
 
 def build_report_data(findings, attack_paths, version):
-    """Put everything into one dictionary. Both reports use it."""
     score, level = calculate_score(findings, attack_paths)
 
     count = {"pass": 0, "fail": 0, "info": 0, "skip": 0}
@@ -84,12 +82,10 @@ def build_report_data(findings, attack_paths, version):
 
 
 def esc(text):
-    """Make text safe to put inside HTML."""
     return html.escape(str(text))
 
 
 def build_html(data):
-    """Build the HTML report as one big string."""
     s = data["summary"]
     out = []
     out.append("<!DOCTYPE html><html><head><meta charset='utf-8'>")
@@ -141,8 +137,6 @@ def build_html(data):
 
 
 def give_back_to_user(path):
-    """When the tool runs with sudo, make the report files belong to the user
-    who ran sudo, so a normal user can open them."""
     uid = os.environ.get("SUDO_UID")
     gid = os.environ.get("SUDO_GID")
     if not (uid and gid):
@@ -154,7 +148,6 @@ def give_back_to_user(path):
 
 
 def save_reports(findings, attack_paths, folder, fmt, version):
-    """Save the report files. fmt can be json, html or both."""
     os.makedirs(folder, exist_ok=True)
     data = build_report_data(findings, attack_paths, version)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
