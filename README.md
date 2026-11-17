@@ -1,4 +1,40 @@
-HardenMap runs on **Ubuntu 24.04 LTS**.
+# HardenMap
+
+**A rule-based Ubuntu 24.04 hardening auditor (CIS Benchmark)**
+
+HardenMap checks an Ubuntu 24.04 machine against selected CIS Benchmark controls, then links related failed checks into possible attack paths. It is read-only: it never changes the system and it only audits the machine it runs on.
+
+- **Course:** Ethical Hacking (IKB31603), UniKL MIIT, October 2026
+- **Team:** Wan Abdul Khaliq, Muhammad Hadi Putra , Zulaila Natasha, Muhammad Amir Hadif
+- **Version:** 1.0.0 | **License:** MIT
+
+## Attack category
+
+**Auditing** (category 5 in the assignment brief).
+
+## What it does
+
+1. Loads 20 rules from `rules/checks.yaml` and runs each one against the real system (file modes, owners, config files, cron jobs, SUID files).
+2. Gives each rule a result: PASS, FAIL, INFO or SKIP.
+3. Links related findings into attack paths (`rules/paths.yaml`), each with a MITRE ATT&CK reference. The four paths are: a writable script run by root, root SSH login with empty passwords, a writable SUID file and readable password hashes with root SSH login.
+4. Gives a risk score (critical = 10, high = 7, medium = 4, low = 1 for each failed rule and attack path) and saves a JSON report and an HTML report.
+
+Reference benchmark: **CIS Ubuntu Linux 24.04 LTS Benchmark v2.0.0, Level 1 Server** (selected controls only, not a full compliance scan).
+
+## Attack lifecycle mapping
+
+| Stage | What HardenMap does | Where in the code |
+|---|---|---|
+| Reconnaissance / enumeration | Collects file modes, owners, SSH settings, cron jobs run by root and SUID files | `checks.py` |
+| Vulnerability analysis | Compares what it found with the CIS rules | `engine.py`, `rules/checks.yaml` |
+| Privilege escalation analysis | Links findings into attack paths, for example a writable file that root runs from cron | `linker.py`, `rules/paths.yaml` |
+| Reporting | Risk score, attack paths, evidence and fix suggestions in JSON and HTML | `report.py` |
+
+HardenMap does not exploit anything so it does not cover exploitation or post-exploitation.
+
+## Quick start
+
+HardenMap runs on **Ubuntu 24.04 LTS** (a laptop or a virtual machine) with **Python 3.12**. It reads Linux system files so it will not give correct results on Windows or macOS.
 
 Open a terminal and run these commands in order:
 
