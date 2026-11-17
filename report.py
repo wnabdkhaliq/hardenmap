@@ -140,6 +140,19 @@ def build_html(data):
     return "\n".join(out)
 
 
+def give_back_to_user(path):
+    """When the tool runs with sudo, make the report files belong to the user
+    who ran sudo, so a normal user can open them."""
+    uid = os.environ.get("SUDO_UID")
+    gid = os.environ.get("SUDO_GID")
+    if not (uid and gid):
+        return
+    try:
+        os.chown(path, int(uid), int(gid))
+    except OSError:
+        pass
+
+
 def save_reports(findings, attack_paths, folder, fmt, version):
     """Save the report files. fmt can be json, html or both."""
     os.makedirs(folder, exist_ok=True)
@@ -159,4 +172,7 @@ def save_reports(findings, attack_paths, folder, fmt, version):
             f.write(build_html(data))
         saved.append(path)
 
+    give_back_to_user(folder)
+    for path in saved:
+        give_back_to_user(path)
     return data, saved
