@@ -128,7 +128,7 @@ HardenMap never changes permissions. These commands are only an example of apply
 sudo chmod 600 /etc/crontab
 sudo chmod 700 /etc/cron.d /etc/cron.daily
 sudo chmod 600 /etc/ssh/sshd_config
-sudo venv/bin/python hardenmap.py scan
+python3 hardenmap.py scan
 ```
 
 To go back to the Ubuntu defaults:
