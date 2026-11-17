@@ -10,7 +10,7 @@ HardenMap checks an Ubuntu 24.04 machine against selected CIS Benchmark controls
 
 ## Attack category
 
-**Auditing** (category 5 in the assignment brief).
+**Auditing**
 
 ## What it does
 
