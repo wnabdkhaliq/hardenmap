@@ -42,7 +42,6 @@ class TestHardenMap(unittest.TestCase):
             {"severity": "high"}
         ]
         score, level = calculate_score(mock_findings, mock_paths)
-        # critical (10) + high (7) + path high (7) = 24 -> HIGH
         self.assertEqual(score, 24)
         self.assertEqual(level, "HIGH")
 
