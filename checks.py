@@ -11,7 +11,7 @@ def check_file_perm(rule):
 
     try:
         info = os.stat(path)
-    except PermissionError:
+    except (PermissionError, OSError):
         return {"status": "skip", "evidence": f"cannot read {path}", "paths": []}
 
     actual_mode = stat.S_IMODE(info.st_mode)
@@ -47,14 +47,14 @@ def check_file_contains(rule):
 
     for path in files:
         try:
-            with open(path) as f:
+            with open(path, "r", encoding="utf-8", errors="replace") as f:
                 for line_number, line in enumerate(f, start=1):
                     text = line.strip()
                     if text.startswith("#"):
                         continue
                     if pattern.search(text):
                         matches.append(f"{path} line {line_number}")
-        except PermissionError:
+        except (PermissionError, OSError):
             unreadable.append(path)
 
     if unreadable and not matches:
