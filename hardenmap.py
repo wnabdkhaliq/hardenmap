@@ -111,6 +111,8 @@ def build_parser():
                           help="folder to save reports (default: output/)")
     scan_cmd.add_argument("--dry-run", action="store_true",
                           help="show what would run, but do not run any checks")
+    scan_cmd.add_argument("-y", "--yes", action="store_true",
+                          help="confirm authorization automatically without interactive prompt")
     scan_cmd.add_argument("--format", choices=["json", "html", "both"], default="both",
                           help="report format to save (default: both)")
     scan_cmd.add_argument("--target", default="localhost",
@@ -132,7 +134,11 @@ def main():
     try:
         if args.command == "scan":
             check_scope(args.target)
-            show_disclaimer_and_confirm()
+            if not getattr(args, "yes", False):
+                show_disclaimer_and_confirm()
+            else:
+                print(DISCLAIMER)
+                print("Authorization auto-confirmed via --yes flag.")
         args.func(args)
     except KeyboardInterrupt:
         print("\nStopped by user (Ctrl+C). No changes were made.")
