@@ -19,6 +19,7 @@ table { border-collapse: collapse; width: 100%; background: #fff; }
 th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left;
          vertical-align: top; font-size: 14px; }
 th { background: #333; color: #fff; }
+tr:hover { background-color: #f7f9fa; }
 .path { background: #fff; border-left: 6px solid #999; padding: 10px; margin: 8px 0; }
 .critical { border-left-color: #c0392b; }
 .high { border-left-color: #e67e22; }
@@ -60,11 +61,17 @@ def build_report_data(findings, attack_paths, version):
     for f in findings:
         count[f["status"]] = count.get(f["status"], 0) + 1
 
+    try:
+        host_ip = socket.gethostbyname(socket.gethostname())
+    except Exception:
+        host_ip = "127.0.0.1"
+
     return {
         "tool": "HardenMap",
         "version": version,
         "scan_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "host": socket.gethostname(),
+        "host_ip": host_ip,
         "benchmark": BENCHMARK,
         "summary": {
             "total": len(findings),
@@ -91,7 +98,10 @@ def build_html(data):
     out.append("<!DOCTYPE html><html><head><meta charset='utf-8'>")
     out.append("<title>HardenMap Report</title><style>" + CSS + "</style></head><body>")
     out.append("<h1>HardenMap Report</h1>")
-    out.append("<p>" + esc(data["benchmark"]) + "<br>Host: " + esc(data["host"])
+    host_display = esc(data["host"])
+    if data.get("host_ip"):
+        host_display += f" ({esc(data['host_ip'])})"
+    out.append("<p>" + esc(data["benchmark"]) + "<br>Host: " + host_display
                + " | Scan time: " + esc(data["scan_time"]) + "</p>")
 
     level_class = "level-" + s["risk_level"].lower()
