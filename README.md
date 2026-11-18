@@ -103,9 +103,18 @@ python3 hardenmap.py scan --output my_reports/   # save reports in another folde
 | `--output` | Folder for the reports (default: `output/`) |
 | `--format` | `json`, `html` or `both` (default: `both`) |
 | `--dry-run` | Show which rules would run, without running them |
+| `-y`, `--yes` | Confirm authorization automatically without interactive prompt |
 | `--target` | Local machine only (default: `localhost`). Other targets are refused |
 
 Run the tool as a **normal user**. If you press **Ctrl+C**, the tool stops cleanly.
+
+## Running tests
+
+HardenMap includes unit tests for verifying rule syntax, risk scoring, and report data generation:
+
+```bash
+python3 -m unittest test_hardenmap.py
+```
 
 ### Reading the results
 
