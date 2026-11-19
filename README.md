@@ -272,3 +272,9 @@ This tool is for authorized security auditing only. Use it only on systems you o
 - On a hardened system, a normal user cannot read some files so those rules show `SKIP`.
 - Only four attack paths are defined. More can be added in `rules/paths.yaml`.
 - It does not scan the network, find CVEs or detect existing compromise. It is not a replacement for a full scanner like Nessus.
+
+## Additional Notes & Checks
+
+- See `HARDENING_NOTES.md` for summary hardening notes and remediation reminders.
+- Added `SSH-004` in `rules/checks.yaml` to flag `X11Forwarding yes` in SSH daemon configurations.
+- Added `PATH-005` in `rules/paths.yaml` to link `SSH-004` with `SSH-001` (`T1563.001`).
