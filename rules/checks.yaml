@@ -215,3 +215,15 @@
     - /usr/local
   severity: low
   fix: Review each SUID file and remove the SUID bit if it is not needed (chmod u-s <file>)
+
+- id: SSH-004
+  title: Ensure X11 forwarding is disabled in SSH daemon config
+  cis_ref: "5.2.5"
+  type: pattern_match
+  targets:
+- /etc/ssh/sshd_config
+- /etc/ssh/sshd_config.d/*.conf
+  pattern: '^X11Forwarding\s+yes'
+  fail_if: found
+  severity: low
+  fix: Set X11Forwarding no in /etc/ssh/sshd_config and reload the ssh service
