@@ -29,3 +29,11 @@
   severity: high
   mitre: "T1003.008 OS Credential Dumping: /etc/passwd and /etc/shadow, T1021.004 Remote Services: SSH"
   explanation: /etc/shadow is more open than CIS allows (it may be readable by other users) and root is allowed to log in over SSH, so a cracked root password could give full remote access.
+
+- id: PATH-005
+  name: X11 forwarding enabled with root SSH login
+  requires: [SSH-004, SSH-001]
+  same_path: false
+  severity: medium
+  mitre: "T1563.001 Remote Service Session Hijacking: SSH Hijacking"
+  explanation: X11 forwarding combined with root SSH access can expose graphical sessions if a client or session is compromised.
