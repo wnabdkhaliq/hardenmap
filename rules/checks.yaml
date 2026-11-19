@@ -221,8 +221,8 @@
   cis_ref: "5.2.5"
   type: pattern_match
   targets:
-- /etc/ssh/sshd_config
-- /etc/ssh/sshd_config.d/*.conf
+    - /etc/ssh/sshd_config
+    - /etc/ssh/sshd_config.d/*.conf
   pattern: '^X11Forwarding\s+yes'
   fail_if: found
   severity: low
