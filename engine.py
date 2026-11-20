@@ -4,6 +4,7 @@ import yaml
 
 from checks import check_file_perm, check_file_contains, check_cron_scripts, check_find_files
 
+# map check names in yaml rules to their checker functions
 CHECK_FUNCTIONS = {
     "file_perm": check_file_perm,
     "file_contains": check_file_contains,
@@ -14,6 +15,7 @@ CHECK_FUNCTIONS = {
 
 def load_rules(folder):
     rules = []
+    # load rules in sorted order so results stay consistent across runs
     for file_path in sorted(glob.glob(os.path.join(folder, "checks*.yaml"))):
         with open(file_path) as f:
             rules += yaml.safe_load(f)
@@ -24,6 +26,7 @@ def run_rules(rules):
     findings = []
     for rule in rules:
         check_function = CHECK_FUNCTIONS.get(rule["type"])
+        # mark unsupported check types as skipped instead of crashing the scan
         if check_function is None:
             result = {"status": "skip", "evidence": "unknown check type", "paths": []}
         else:
