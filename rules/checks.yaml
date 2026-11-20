@@ -216,10 +216,10 @@
   severity: low
   fix: Review each SUID file and remove the SUID bit if it is not needed (chmod u-s <file>)
 
-- id: SSH-004
+- id: SSH-006
   title: Ensure X11 forwarding is disabled in SSH daemon config
   cis_ref: "5.2.5"
-  type: pattern_match
+  type: file_contains
   targets:
     - /etc/ssh/sshd_config
     - /etc/ssh/sshd_config.d/*.conf

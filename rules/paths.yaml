@@ -32,7 +32,7 @@
 
 - id: PATH-005
   name: X11 forwarding enabled with root SSH login
-  requires: [SSH-004, SSH-001]
+  requires: [SSH-006, SSH-001]
   same_path: false
   severity: medium
   mitre: "T1563.001 Remote Service Session Hijacking: SSH Hijacking"

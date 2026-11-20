@@ -55,11 +55,11 @@ class TestHardenMap(unittest.TestCase):
         self.assertIn("host_ip", data)
 
 
-    def test_ssh004_rule_and_path005_present(self):
-        """Verify SSH-004 rule and PATH-005 attack path are present."""
+    def test_ssh006_rule_and_path005_present(self):
+        """Verify SSH-006 rule and PATH-005 attack path are present."""
         rules = load_rules("rules")
         rule_ids = [r.get("id") for r in rules]
-        self.assertIn("SSH-004", rule_ids)
+        self.assertIn("SSH-006", rule_ids)
 
         paths = load_path_rules("rules")
         path_ids = [p.get("id") for p in paths]
