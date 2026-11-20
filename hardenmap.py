@@ -21,7 +21,7 @@ This tool is read-only. It does not change any system setting.
 ==============================================================
 """
 
-
+# restrict scans to the local machine to prevent accidental remote targets
 LOCAL_TARGETS = ("localhost", "127.0.0.1")
 
 
@@ -45,6 +45,7 @@ def run_scan(args):
     print(f"Loaded {len(rules)} rules from {args.rules}")
     print(f"Target scope: {args.target} (local machine only)")
 
+    # preview rules without executing checks or saving reports
     if args.dry_run:
         print("Dry run: these rules would run, but no checks are run.")
         for rule in rules:
