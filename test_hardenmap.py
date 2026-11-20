@@ -6,7 +6,7 @@ Run with: python3 -m unittest test_hardenmap.py
 import unittest
 from engine import load_rules
 from linker import load_path_rules, link_paths
-from report import calculate_score, build_report_data
+from report import calculate_score, build_report_data, build_csv
 
 
 class TestHardenMap(unittest.TestCase):
@@ -64,6 +64,37 @@ class TestHardenMap(unittest.TestCase):
         paths = load_path_rules("rules")
         path_ids = [p.get("id") for p in paths]
         self.assertIn("PATH-005", path_ids)
+
+    def test_auth_rules_and_path006_present(self):
+        """Verify AUTH-001 through AUTH-003 and PATH-006 are defined."""
+        rules = load_rules("rules")
+        rule_ids = [r.get("id") for r in rules]
+        self.assertIn("AUTH-001", rule_ids)
+        self.assertIn("AUTH-002", rule_ids)
+        self.assertIn("AUTH-003", rule_ids)
+
+        paths = load_path_rules("rules")
+        path_ids = [p.get("id") for p in paths]
+        self.assertIn("PATH-006", path_ids)
+
+    def test_build_csv_export(self):
+        """Verify CSV report generation includes headers and finding row."""
+        mock_data = {
+            "findings": [
+                {
+                    "id": "AUTH-001",
+                    "cis_ref": "5.4.1.1",
+                    "title": "Password expiration",
+                    "status": "fail",
+                    "severity": "medium",
+                    "evidence": "/etc/login.defs missing setting",
+                    "fix": "Set PASS_MAX_DAYS 365",
+                }
+            ]
+        }
+        csv_output = build_csv(mock_data)
+        self.assertIn("ID,CIS_Ref,Title,Status,Severity,Evidence,Fix", csv_output)
+        self.assertIn("AUTH-001,5.4.1.1,Password expiration,FAIL,medium", csv_output)
 
 if __name__ == "__main__":
     unittest.main()
