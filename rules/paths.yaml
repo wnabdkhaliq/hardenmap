@@ -37,3 +37,11 @@
   severity: medium
   mitre: "T1563.001 Remote Service Session Hijacking: SSH Hijacking"
   explanation: X11 forwarding combined with root SSH access can expose graphical sessions if a client or session is compromised.
+
+- id: PATH-006
+  name: Weak password aging with root SSH login
+  requires: [AUTH-001, SSH-001]
+  same_path: false
+  severity: high
+  mitre: "T1078 Valid Accounts, T1021.004 Remote Services: SSH"
+  explanation: Accounts with non-expiring passwords combined with permitted root SSH login increase vulnerability to credential stuffing and brute-force persistence.
