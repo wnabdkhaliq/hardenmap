@@ -18,6 +18,7 @@ def check_file_perm(rule):
     allowed_mode = int(rule["max_mode"], 8)
     expected_owner = rule.get("owner_uid", 0)
 
+    # flag any permission bits set beyond what max_mode allows
     extra_bits = actual_mode & ~allowed_mode
 
     problems = []
@@ -50,6 +51,7 @@ def check_file_contains(rule):
             with open(path, "r", encoding="utf-8", errors="replace") as f:
                 for line_number, line in enumerate(f, start=1):
                     text = line.strip()
+                    # ignore commented lines in config files
                     if text.startswith("#"):
                         continue
                     if pattern.search(text):
@@ -126,6 +128,7 @@ def check_find_files(rule):
             for name in files:
                 full_path = os.path.join(root, name)
 
+                # skip symlinks so we check the actual file and don't follow loops
                 if os.path.islink(full_path):
                     continue
 
