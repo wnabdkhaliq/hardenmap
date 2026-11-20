@@ -113,7 +113,7 @@ def build_parser():
                           help="show what would run, but do not run any checks")
     scan_cmd.add_argument("-y", "--yes", action="store_true",
                           help="confirm authorization automatically without interactive prompt")
-    scan_cmd.add_argument("--format", choices=["json", "html", "both"], default="both",
+    scan_cmd.add_argument("--format", choices=["json", "html", "csv", "both", "all"], default="both",
                           help="report format to save (default: both)")
     scan_cmd.add_argument("--target", default="localhost",
                           help="target to audit, local machine only (default: localhost)")

@@ -1,4 +1,6 @@
+import csv
 import html
+import io
 import json
 import os
 import socket
@@ -146,6 +148,23 @@ def build_html(data):
     return "\n".join(out)
 
 
+def build_csv(data):
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "CIS_Ref", "Title", "Status", "Severity", "Evidence", "Fix"])
+    for f in data.get("findings", []):
+        writer.writerow([
+            f.get("id", ""),
+            f.get("cis_ref", ""),
+            f.get("title", ""),
+            f.get("status", "").upper(),
+            f.get("severity", ""),
+            f.get("evidence", ""),
+            f.get("fix", "") if f.get("status") == "fail" else "",
+        ])
+    return output.getvalue()
+
+
 def give_back_to_user(path):
     uid = os.environ.get("SUDO_UID")
     gid = os.environ.get("SUDO_GID")
@@ -163,16 +182,22 @@ def save_reports(findings, attack_paths, folder, fmt, version):
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     saved = []
 
-    if fmt in ("json", "both"):
+    if fmt in ("json", "both", "all"):
         path = os.path.join(folder, f"hardenmap_report_{stamp}.json")
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
         saved.append(path)
 
-    if fmt in ("html", "both"):
+    if fmt in ("html", "both", "all"):
         path = os.path.join(folder, f"hardenmap_report_{stamp}.html")
         with open(path, "w") as f:
             f.write(build_html(data))
+        saved.append(path)
+
+    if fmt in ("csv", "all"):
+        path = os.path.join(folder, f"hardenmap_report_{stamp}.csv")
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            f.write(build_csv(data))
         saved.append(path)
 
     give_back_to_user(folder)
