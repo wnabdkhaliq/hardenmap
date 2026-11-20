@@ -14,10 +14,10 @@ HardenMap checks an Ubuntu 24.04 machine against selected CIS Benchmark controls
 
 ## What it does
 
-1. Loads 20 rules from `rules/checks.yaml` and runs each one against the real system (file modes, owners, config files, cron jobs, SUID files).
+1. Loads 23 rules from `rules/checks.yaml` and runs each one against the real system (file modes, owners, config files, cron jobs, SUID files, password aging).
 2. Gives each rule a result: PASS, FAIL, INFO or SKIP.
-3. Links related findings into attack paths (`rules/paths.yaml`), each with a MITRE ATT&CK reference. The four paths are: a writable script run by root, root SSH login with empty passwords, a writable SUID file and readable password hashes with root SSH login.
-4. Gives a risk score (critical = 10, high = 7, medium = 4, low = 1 for each failed rule and attack path) and saves a JSON report and an HTML report.
+3. Links related findings into attack paths (`rules/paths.yaml`), each with a MITRE ATT&CK reference (covering writable root scripts, empty password logins, writable SUID binaries, exposed hashes, X11 forwarding, and weak password aging with root SSH).
+4. Gives a risk score (critical = 10, high = 7, medium = 4, low = 1 for each failed rule and attack path) and saves reports in JSON, HTML, or CSV format.
 
 Reference benchmark: **CIS Ubuntu Linux 24.04 LTS Benchmark v2.0.0, Level 1 Server** (selected controls only, not a full compliance scan).
 
@@ -84,7 +84,7 @@ Try the commands in this order the first time:
 
 ```bash
 python3 hardenmap.py --help          # see all options
-python3 hardenmap.py list-rules      # show the 20 rules
+python3 hardenmap.py list-rules      # show the 23 rules
 python3 hardenmap.py scan --dry-run  # show what would run, without running it
 python3 hardenmap.py scan            # run the audit
 ```
@@ -94,6 +94,8 @@ Other examples:
 ```bash
 python3 hardenmap.py scan --format json       # save only the JSON report
 python3 hardenmap.py scan --format html       # save only the HTML report
+python3 hardenmap.py scan --format csv        # save only the CSV report
+python3 hardenmap.py scan --format all        # save JSON, HTML, and CSV reports
 python3 hardenmap.py scan --output my_reports/   # save reports in another folder
 ```
 
@@ -101,7 +103,7 @@ python3 hardenmap.py scan --output my_reports/   # save reports in another folde
 |---|---|
 | `--rules` | Folder with the rule files (default: `rules/`) |
 | `--output` | Folder for the reports (default: `output/`) |
-| `--format` | `json`, `html` or `both` (default: `both`) |
+| `--format` | `json`, `html`, `csv`, `both` or `all` (default: `both`) |
 | `--dry-run` | Show which rules would run, without running them |
 | `-y`, `--yes` | Confirm authorization automatically without interactive prompt |
 | `--target` | Local machine only (default: `localhost`). Other targets are refused |
@@ -276,5 +278,8 @@ This tool is for authorized security auditing only. Use it only on systems you o
 ## Additional Notes & Checks
 
 - See `HARDENING_NOTES.md` for summary hardening notes and remediation reminders.
-- Added `SSH-004` in `rules/checks.yaml` to flag `X11Forwarding yes` in SSH daemon configurations.
-- Added `PATH-005` in `rules/paths.yaml` to link `SSH-004` with `SSH-001` (`T1563.001`).
+- Configured `SSH-006` in `rules/checks.yaml` to flag `X11Forwarding yes` in SSH daemon configurations.
+- Added `PATH-005` in `rules/paths.yaml` to link `SSH-006` with `SSH-001` (`T1563.001`).
+- Added CIS password expiration rules `AUTH-001`, `AUTH-002`, and `AUTH-003` for `/etc/login.defs` (CIS 5.4.1.1, 5.4.1.2, 5.4.1.3).
+- Added `PATH-006` in `rules/paths.yaml` linking `AUTH-001` with `SSH-001` (`T1078 Valid Accounts`).
+- Added CSV report generation support (`--format csv` and `--format all`).
