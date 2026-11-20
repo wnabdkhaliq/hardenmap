@@ -7,7 +7,7 @@ import socket
 from datetime import datetime
 
 BENCHMARK = "CIS Ubuntu Linux 24.04 LTS Benchmark v2.0.0 Level 1 Server (selected controls)"
-
+# points added to the risk score for each failed rule and each attack path
 POINTS = {"critical": 10, "high": 7, "medium": 4, "low": 1}
 
 STATUS_ORDER = {"fail": 0, "info": 1, "skip": 2, "pass": 3}
@@ -39,6 +39,7 @@ tr:hover { background-color: #f7f9fa; }
 
 def calculate_score(findings, attack_paths):
     score = 0
+    # only failed rules add points, pass, info and skip add nothing 
     for f in findings:
         if f["status"] == "fail":
             score += POINTS.get(f["severity"], 0)
@@ -122,6 +123,7 @@ def build_html(data):
         out.append(f"<div class='path {esc(p['severity'])}'>")
         out.append(f"<b>[{esc(p['severity'].upper())}] {esc(p['id'])} - {esc(p['name'])}</b><br>")
         out.append("Linked checks: " + esc(" + ".join(p["requires"])) + "<br>")
+        # files are only filled in when the path needs the same file in both rules
         if p["files"]:
             out.append("Files: " + esc(", ".join(p["files"])) + "<br>")
         out.append("Why: " + esc(p["explanation"]))
@@ -166,6 +168,7 @@ def build_csv(data):
 
 
 def give_back_to_user(path):
+    # when the tool runs with sudo, sudo saves the real user's id in these variables
     uid = os.environ.get("SUDO_UID")
     gid = os.environ.get("SUDO_GID")
     if not (uid and gid):
@@ -179,6 +182,7 @@ def give_back_to_user(path):
 def save_reports(findings, attack_paths, folder, fmt, version):
     os.makedirs(folder, exist_ok=True)
     data = build_report_data(findings, attack_paths, version)
+    # date and time in the file name so a new scan never overwrites an old report
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     saved = []
 
