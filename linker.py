@@ -1,6 +1,7 @@
 import os
 import yaml
 
+# used to sort matched attack paths from highest to lowest severity
 SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
 
@@ -9,6 +10,7 @@ def load_path_rules(folder):
     if not os.path.exists(file_path):
         return []
     with open(file_path) as f:
+        # return empty list if the yaml file is blank
         return yaml.safe_load(f) or []
 
 
@@ -22,6 +24,7 @@ def link_paths(findings, path_rules):
     for rule in path_rules:
         needed = rule["requires"]
 
+        # skip unless every required check was triggered
         if not all(rule_id in triggered for rule_id in needed):
             continue
 
